@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import JoinRoomButton from "@/components/room/JoinRoomButton";
+import RoomCode from "@/components/ui/RoomCode";
 
 export default async function JoinRoomPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -22,9 +23,9 @@ export default async function JoinRoomPage({ params }: { params: Promise<{ slug:
   if (!room) {
     return (
       <main className="flex flex-1 items-center justify-center px-6 py-24 text-center">
-        <div>
-          <h1 className="text-2xl font-semibold">Room not found</h1>
-          <p className="mt-2 text-sm text-zinc-500">
+        <div className="rounded-2xl border border-border bg-bg-raised px-8 py-10">
+          <h1 className="font-display text-xl font-bold">Room not found</h1>
+          <p className="mt-2 text-sm text-foreground-muted">
             This invite link is invalid or the room no longer exists.
           </p>
         </div>
@@ -45,9 +46,10 @@ export default async function JoinRoomPage({ params }: { params: Promise<{ slug:
 
   return (
     <main className="flex flex-1 items-center justify-center px-6 py-24 text-center">
-      <div className="flex flex-col items-center gap-4">
-        <h1 className="text-2xl font-semibold">Join &ldquo;{room.name}&rdquo;?</h1>
-        <p className="text-sm text-zinc-500">You&apos;ll be added to this watch party.</p>
+      <div className="flex w-full max-w-sm flex-col items-center gap-6 rounded-2xl border border-border bg-bg-raised px-8 py-10">
+        <p className="text-sm font-medium text-foreground-muted">You&apos;re invited to</p>
+        <h1 className="text-balance font-display text-3xl font-bold leading-tight">{room.name}</h1>
+        <RoomCode code={slug} size="sm" className="justify-center opacity-70" />
         <JoinRoomButton slug={slug} />
       </div>
     </main>

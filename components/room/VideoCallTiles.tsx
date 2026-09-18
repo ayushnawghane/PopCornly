@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, PhoneCall } from "lucide-react";
 import { usePeerConnections } from "@/lib/webrtc/use-peer-connections";
+import Button from "@/components/ui/Button";
 import type { RoomMember } from "@/lib/types";
 
 function VideoTile({ stream, label, muted }: { stream: MediaStream; label: string; muted?: boolean }) {
@@ -12,9 +14,11 @@ function VideoTile({ stream, label, muted }: { stream: MediaStream; label: strin
   }, [stream]);
 
   return (
-    <div className="relative aspect-video overflow-hidden rounded-md bg-zinc-900">
+    <div className="relative aspect-video overflow-hidden rounded-xl border border-border bg-black">
       <video ref={videoRef} autoPlay playsInline muted={muted} className="h-full w-full object-cover" />
-      <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1.5 py-0.5 text-xs text-white">{label}</span>
+      <span className="absolute bottom-1.5 left-1.5 rounded-md bg-black/60 px-1.5 py-0.5 text-xs font-medium text-white">
+        {label}
+      </span>
     </div>
   );
 }
@@ -37,15 +41,13 @@ export default function VideoCallTiles({
 
   if (!joined) {
     return (
-      <div className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center dark:border-zinc-800">
-        <p className="text-sm text-zinc-500">Video call is off. Camera/mic only turn on if you join.</p>
-        <button
-          onClick={() => setJoined(true)}
-          className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc]"
-        >
+      <div className="flex flex-col items-center gap-3 rounded-2xl border border-border bg-bg-raised p-5 text-center">
+        <p className="text-sm text-foreground-muted">Video call is off. Camera/mic only turn on if you join.</p>
+        <Button onClick={() => setJoined(true)} size="sm">
+          <PhoneCall className="h-3.5 w-3.5" />
           Join video call
-        </button>
-        <p className="text-xs text-zinc-400">
+        </Button>
+        <p className="text-xs text-foreground-muted/70">
           Peer-to-peer, no relay server — calls may fail to connect on strict corporate/school networks.
         </p>
       </div>
@@ -53,8 +55,8 @@ export default function VideoCallTiles({
   }
 
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-zinc-200 p-3 dark:border-zinc-800">
-      {mediaError && <p className="text-sm text-red-500">{mediaError}</p>}
+    <div className="flex flex-col gap-3 rounded-2xl border border-border bg-bg-raised p-3">
+      {mediaError && <p className="text-sm text-danger">{mediaError}</p>}
 
       <div className="grid grid-cols-2 gap-2">
         {localStream && <VideoTile stream={localStream} label="You" muted />}
@@ -66,20 +68,25 @@ export default function VideoCallTiles({
       <div className="flex items-center gap-2">
         <button
           onClick={toggleMic}
-          className="rounded-full border border-zinc-300 px-3 py-1.5 text-xs font-medium transition-colors hover:bg-black/[.04] dark:border-zinc-700 dark:hover:bg-white/[.06]"
+          aria-label={micEnabled ? "Mute microphone" : "Unmute microphone"}
+          className="flex items-center gap-1.5 rounded-xl border border-border-strong px-3 py-1.5 text-xs font-medium transition-colors hover:border-secondary hover:text-secondary"
         >
+          {micEnabled ? <Mic className="h-3.5 w-3.5" /> : <MicOff className="h-3.5 w-3.5 text-danger" />}
           {micEnabled ? "Mute" : "Unmute"}
         </button>
         <button
           onClick={toggleCamera}
-          className="rounded-full border border-zinc-300 px-3 py-1.5 text-xs font-medium transition-colors hover:bg-black/[.04] dark:border-zinc-700 dark:hover:bg-white/[.06]"
+          aria-label={cameraEnabled ? "Stop camera" : "Start camera"}
+          className="flex items-center gap-1.5 rounded-xl border border-border-strong px-3 py-1.5 text-xs font-medium transition-colors hover:border-secondary hover:text-secondary"
         >
+          {cameraEnabled ? <VideoIcon className="h-3.5 w-3.5" /> : <VideoOff className="h-3.5 w-3.5 text-danger" />}
           {cameraEnabled ? "Stop camera" : "Start camera"}
         </button>
         <button
           onClick={() => setJoined(false)}
-          className="rounded-full border border-red-300 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950"
+          className="ml-auto flex items-center gap-1.5 rounded-xl border border-danger/30 bg-danger/15 px-3 py-1.5 text-xs font-medium text-danger transition-colors hover:bg-danger/25"
         >
+          <PhoneOff className="h-3.5 w-3.5" />
           Leave call
         </button>
       </div>

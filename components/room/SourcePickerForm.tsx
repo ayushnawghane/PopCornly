@@ -4,6 +4,8 @@ import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { extractYouTubeId } from "@/lib/player/youtube-adapter";
 import { extractVimeoId } from "@/lib/player/vimeo-adapter";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 
 type Tab = "youtube" | "vimeo" | "direct_url" | "upload";
 
@@ -112,8 +114,8 @@ export default function SourcePickerForm({ roomId }: { roomId: string }) {
   }
 
   return (
-    <div className="flex w-full max-w-md flex-col gap-4 rounded-lg border border-zinc-200 p-5 dark:border-zinc-800">
-      <div className="flex gap-1 text-sm">
+    <div className="flex w-full max-w-md flex-col gap-4 rounded-2xl border border-border bg-bg-raised p-5">
+      <div className="flex flex-wrap gap-1 text-sm">
         {(["youtube", "vimeo", "direct_url", "upload"] as Tab[]).map((t) => (
           <button
             key={t}
@@ -121,10 +123,10 @@ export default function SourcePickerForm({ roomId }: { roomId: string }) {
               setTab(t);
               setError(null);
             }}
-            className={`rounded-full px-3 py-1.5 transition-colors ${
+            className={`rounded-lg px-3 py-1.5 font-medium transition-colors ${
               tab === t
-                ? "bg-foreground text-background"
-                : "text-zinc-500 hover:bg-black/[.04] dark:hover:bg-white/[.06]"
+                ? "bg-primary text-primary-foreground"
+                : "text-foreground-muted hover:bg-bg-raised-2 hover:text-foreground"
             }`}
           >
             {t === "direct_url" ? "Direct link" : t[0].toUpperCase() + t.slice(1)}
@@ -138,29 +140,25 @@ export default function SourcePickerForm({ roomId }: { roomId: string }) {
             type="file"
             accept="video/*"
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="text-sm"
+            className="text-sm text-foreground-muted file:mr-3 file:rounded-lg file:border-0 file:bg-bg-raised-2 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-foreground hover:file:bg-secondary/20"
           />
-          <label className="flex items-start gap-2 text-xs text-zinc-500">
+          <label className="flex items-start gap-2 text-xs text-foreground-muted">
             <input
               type="checkbox"
               checked={rightsConfirmed}
               onChange={(e) => setRightsConfirmed(e.target.checked)}
-              className="mt-0.5"
+              className="mt-0.5 accent-tertiary"
             />
             I own this video or have the rights to share it with this room.
           </label>
-          {error && <p className="text-sm text-red-500">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-[#383838] disabled:opacity-50 dark:hover:bg-[#ccc]"
-          >
+          {error && <p className="text-sm text-danger">{error}</p>}
+          <Button type="submit" disabled={loading} size="sm">
             {loading ? "Uploading…" : "Upload and set as source"}
-          </button>
+          </Button>
         </form>
       ) : (
         <form onSubmit={handleUrlSubmit} className="flex flex-col gap-3">
-          <input
+          <Input
             type="url"
             required
             placeholder={
@@ -172,16 +170,11 @@ export default function SourcePickerForm({ roomId }: { roomId: string }) {
             }
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="rounded-md border border-zinc-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-zinc-500 dark:border-zinc-700"
           />
-          {error && <p className="text-sm text-red-500">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-[#383838] disabled:opacity-50 dark:hover:bg-[#ccc]"
-          >
+          {error && <p className="text-sm text-danger">{error}</p>}
+          <Button type="submit" disabled={loading} size="sm">
             {loading ? "Setting…" : "Set as source"}
-          </button>
+          </Button>
         </form>
       )}
     </div>

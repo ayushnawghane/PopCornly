@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import RoomCode from "@/components/ui/RoomCode";
 
 export default function NewRoomPage() {
   const router = useRouter();
@@ -32,38 +36,45 @@ export default function NewRoomPage() {
   }
 
   return (
-    <main className="flex flex-1 items-center justify-center px-6 py-24">
+    <main className="flex flex-1 items-center justify-center px-6 py-16">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-semibold">Create a room</h1>
-        <p className="mt-2 text-sm text-zinc-500">
-          You&apos;ll get an invite link to share right after.
-        </p>
+        <div className="mb-6 flex justify-center opacity-60">
+          <RoomCode code="••••••" size="sm" />
+        </div>
+        <Link
+          href="/"
+          className="mb-8 block text-center font-display text-lg font-bold tracking-tight"
+        >
+          popcornly<span className="text-primary">.</span>
+        </Link>
 
-        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="name" className="text-sm font-medium">
-              Room name
-            </label>
-            <input
-              id="name"
-              type="text"
-              placeholder="Watch Party"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="rounded-md border border-zinc-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-zinc-500 dark:border-zinc-700"
-            />
-          </div>
+        <div className="rounded-2xl border border-border bg-bg-raised p-8">
+          <h1 className="font-display text-xl font-bold">Name your room</h1>
+          <p className="mt-1.5 text-sm text-foreground-muted">
+            You&apos;ll get an invite link to send your friends right after.
+          </p>
 
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          <form onSubmit={handleSubmit} className="mt-7 flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="name" className="text-sm font-medium">
+                Room name
+              </label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Friday Movie Night"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-[#383838] disabled:opacity-50 dark:hover:bg-[#ccc]"
-          >
-            {loading ? "Creating…" : "Create room"}
-          </button>
-        </form>
+            {error && <p className="text-sm text-danger">{error}</p>}
+
+            <Button type="submit" disabled={loading} display className="mt-2 w-full py-3">
+              {loading ? "Setting up…" : "Create room"}
+            </Button>
+          </form>
+        </div>
       </div>
     </main>
   );

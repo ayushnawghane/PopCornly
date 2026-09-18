@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Button from "@/components/ui/Button";
 
 export default function JoinRoomButton({ slug }: { slug: string }) {
   const router = useRouter();
@@ -28,14 +29,10 @@ export default function JoinRoomButton({ slug }: { slug: string }) {
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <button
-        onClick={handleJoin}
-        disabled={loading}
-        className="rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-[#383838] disabled:opacity-50 dark:hover:bg-[#ccc]"
-      >
-        {loading ? "Joining…" : "Join room"}
-      </button>
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      <Button onClick={handleJoin} disabled={loading} display className="w-full py-3">
+        {loading ? "Joining…" : "Join the party"}
+      </Button>
+      {error && <p className="text-sm text-danger">{error}</p>}
     </div>
   );
 }

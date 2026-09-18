@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local design-review screenshots (Impeccable skill QA artifacts)
+.impeccable/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -12,6 +12,8 @@ import type { Html5Adapter } from "@/lib/player/html5-adapter";
 import type { VideoPlayerAdapter } from "@/lib/player/types";
 import type { Room } from "@/lib/types";
 import SourcePickerForm from "./SourcePickerForm";
+import Button from "@/components/ui/Button";
+import { Play, Pause, Film, RotateCcw } from "lucide-react";
 
 export default function RoomPlayer({
   room: initialRoom,
@@ -139,11 +141,14 @@ export default function RoomPlayer({
 
   return (
     <div className="flex flex-1 flex-col gap-3">
-      <div className="flex aspect-video w-full items-center justify-center overflow-hidden rounded-lg bg-black">
+      <div className="flex aspect-video w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-black">
         {room.source_type === "none" && (
-          <p className="text-sm text-zinc-500">
-            {isHost ? "Pick a video below to get started" : "Waiting for the host to pick a video…"}
-          </p>
+          <div className="flex flex-col items-center gap-2 text-foreground-muted">
+            <Film className="h-8 w-8" strokeWidth={1.5} />
+            <p className="text-sm">
+              {isHost ? "Pick a video below to get started" : "Waiting for the host to pick a video…"}
+            </p>
+          </div>
         )}
 
         {room.source_type === "youtube" && room.source_url && (
@@ -161,33 +166,32 @@ export default function RoomPlayer({
 
         {(room.source_type === "upload" || room.source_type === "direct_url") &&
           (playbackError ? (
-            <p className="text-sm text-red-400">{playbackError}</p>
+            <p className="px-6 text-center text-sm text-danger">{playbackError}</p>
           ) : playbackUrl ? (
             <video ref={handleHtml5Ref} src={playbackUrl} className="h-full w-full" controls={!isHost} />
           ) : (
-            <p className="text-sm text-zinc-500">Loading video…</p>
+            <p className="text-sm text-foreground-muted">Loading video…</p>
           ))}
       </div>
 
       {isHost && room.source_type !== "none" && (
         <div className="flex items-center gap-3">
-          <button
-            onClick={togglePlay}
-            className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc]"
-          >
+          <Button onClick={togglePlay} size="sm">
+            {isPlaying ? <Pause className="h-3.5 w-3.5" fill="currentColor" /> : <Play className="h-3.5 w-3.5" fill="currentColor" />}
             {isPlaying ? "Pause" : "Play"}
-          </button>
+          </Button>
           <button
             onClick={() => setManuallyOpened((v) => !v)}
-            className="text-sm text-zinc-500 underline underline-offset-4 hover:text-foreground"
+            className="flex items-center gap-1.5 text-sm text-foreground-muted transition-colors hover:text-secondary"
           >
+            <RotateCcw className="h-3.5 w-3.5" />
             Change source
           </button>
         </div>
       )}
 
       {!isHost && room.source_type !== "none" && (
-        <p className="text-xs text-zinc-500">Playback is synced to the host — controls are host-only.</p>
+        <p className="text-xs text-foreground-muted">Playback is synced to the host — controls are host-only.</p>
       )}
 
       {isHost && showSourcePicker && <SourcePickerForm roomId={room.id} />}

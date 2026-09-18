@@ -1,26 +1,120 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-bg: #15101e;
+  --color-bg-raised: #1e1729;
+  --color-bg-raised-2: #271f35;
+  --color-foreground: #f6f0e8;
+  --color-foreground-muted: #b6a8c9;
+  --color-border: rgba(246, 240, 232, 0.12);
+  --color-border-strong: rgba(246, 240, 232, 0.2);
+  --color-primary: #ff6b35;
+  --color-primary-foreground: #1a0f08;
+  --color-secondary: #a855f7;
+  --color-tertiary: #34d399;
+  --color-danger: #fb4570;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--color-bg);
+  --color-bg-raised: var(--color-bg-raised);
+  --color-bg-raised-2: var(--color-bg-raised-2);
+  --color-foreground: var(--color-foreground);
+  --color-foreground-muted: var(--color-foreground-muted);
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-primary: var(--color-primary);
+  --color-primary-foreground: var(--color-primary-foreground);
+  --color-secondary: var(--color-secondary);
+  --color-tertiary: var(--color-tertiary);
+  --color-danger: var(--color-danger);
+  --font-display: var(--font-unbounded);
+  --font-sans: var(--font-hanken);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-foreground);
+  font-family: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-bg-raised-2);
+  border-radius: 999px;
+  border: 3px solid var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-tertiary);
+  outline-offset: 2px;
+}
+
+input,
+textarea,
+select {
+  color-scheme: dark;
+}
+
+/* tabular numerals for room codes / counters / timestamps */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* the lobby's one authored entrance: avatar chips popping into the room */
+@keyframes chip-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-chip-in {
+  animation: chip-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.animate-live-pulse {
+  animation: live-pulse 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-chip-in,
+  .animate-live-pulse {
+    animation: none;
+  }
 }

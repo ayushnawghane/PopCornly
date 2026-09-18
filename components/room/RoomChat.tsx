@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Send } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { getOrCreateChannel, releaseChannel } from "@/lib/realtime/room-channel";
 import type { ChatMessage, RoomMember } from "@/lib/types";
@@ -75,30 +76,40 @@ export default function RoomChat({
   }
 
   return (
-    <div className="flex h-80 flex-col rounded-lg border border-zinc-200 dark:border-zinc-800">
+    <div className="flex h-80 flex-col rounded-2xl border border-border bg-bg-raised">
       <div ref={scrollRef} className="flex-1 space-y-2 overflow-y-auto p-3">
-        {messages.length === 0 && <p className="text-xs text-zinc-500">No messages yet — say hi!</p>}
-        {messages.map((m) => (
-          <div key={m.id} className="text-sm">
-            <span className="font-medium">{nameFor(m.user_id)}</span>
-            <span className="ml-2 text-zinc-700 dark:text-zinc-300">{m.body}</span>
-          </div>
-        ))}
+        {messages.length === 0 && <p className="text-xs text-foreground-muted">No messages yet — say hi!</p>}
+        {messages.map((m) => {
+          const isMe = m.user_id === currentUserId;
+          return (
+            <div key={m.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
+              <div
+                className={`max-w-[85%] rounded-xl px-3 py-1.5 text-sm ${
+                  isMe ? "bg-primary text-primary-foreground" : "bg-bg-raised-2 text-foreground"
+                }`}
+              >
+                {!isMe && <p className="text-xs font-semibold text-secondary">{nameFor(m.user_id)}</p>}
+                <p className="wrap-break-word">{m.body}</p>
+              </div>
+            </div>
+          );
+        })}
       </div>
-      <form onSubmit={handleSend} className="flex gap-2 border-t border-zinc-200 p-2 dark:border-zinc-800">
+      <form onSubmit={handleSend} className="flex gap-2 border-t border-border p-2">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Message the room…"
           maxLength={2000}
-          className="flex-1 rounded-md border border-zinc-300 bg-transparent px-3 py-1.5 text-sm outline-none focus:border-zinc-500 dark:border-zinc-700"
+          className="flex-1 rounded-xl border border-border bg-bg px-3 py-1.5 text-sm text-foreground outline-none focus:border-tertiary"
         />
         <button
           type="submit"
           disabled={sending || !input.trim()}
-          className="rounded-full bg-foreground px-4 py-1.5 text-sm font-medium text-background transition-colors hover:bg-[#383838] disabled:opacity-50 dark:hover:bg-[#ccc]"
+          aria-label="Send message"
+          className="flex items-center justify-center rounded-xl bg-primary px-3 text-primary-foreground transition-colors hover:bg-[#ff7f4f] disabled:opacity-40"
         >
-          Send
+          <Send className="h-4 w-4" />
         </button>
       </form>
     </div>
